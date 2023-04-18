@@ -4,9 +4,9 @@ from scipy.stats import stats
 import sys
 import scipy as scipy
 from scipy import stats
-import matplotlib.pyplot as plt
+
 import scipy.stats as st
-import matplotlib.pyplot as plt
+
 import random
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from scipy.stats import norm
@@ -23,12 +23,7 @@ import warnings
 warnings.simplefilter('ignore', category=NumbaDeprecationWarning)
 warnings.simplefilter('ignore', category=NumbaPendingDeprecationWarning)
 
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from PIL import Image
-import imageio
-import time
-from matplotlib.ticker import ScalarFormatter
+
 
 
 def create_frame(book, frame_num, N_depth, MAX=95, MIN=105):
