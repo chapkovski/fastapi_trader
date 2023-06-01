@@ -1,5 +1,6 @@
 # Import the FastAPI library
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 import json
 from collections import OrderedDict
 from pprint import pprint
@@ -8,8 +9,17 @@ import numpy as np
 import pandas as pd
 from beautifier import PrettyJSONResponse
 
+
 # Create an instance of the FastAPI class
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 
 settings = {
