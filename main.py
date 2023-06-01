@@ -90,7 +90,7 @@ def order_book_wrapper(settings):
         for j, i in enumerate(out["book_state"]):
             arr = i[0].get(_type)
             arr_sub = arr[:, :3]
-            df = pd.DataFrame(arr_sub, columns=["timestamp", "action", "trader"])
+            df = pd.DataFrame(arr_sub, columns=["price", "action", "trader"])
             res.append(df.to_dict(orient="records"))
 
         return res
@@ -110,18 +110,22 @@ def order_book_wrapper(settings):
         trade_history_df, left_index=True, right_index=True
     )
     trade_history = df.to_dict(orient="records")
+    timestamps=df['timestamp'].tolist()
     increment_trade_history = [trade_history[:i+1] for i in range(len(trade_history))]
 
-    full_data_zip=zip(increment_trade_history, bid_list, ask_list)
+    full_data_zip=zip(timestamps,increment_trade_history, bid_list, ask_list)
     full_data=[dict(
+        timestamp=timestamp,
         history=history, 
         bid=bid,
         ask=ask
-    ) for history, bid, ask in full_data_zip]
+    ) for timestamp, history, bid, ask in full_data_zip]
+    
     return full_data
       
 
 data=order_book_wrapper(settings)
 # that we need for local testing of a wrapper
 if __name__ == "__main__":
-    print(data[0])
+    pass
+    pprint(data[0])
