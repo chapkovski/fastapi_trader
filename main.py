@@ -8,7 +8,7 @@ import exogeneous_model as exog_fun
 import numpy as np
 import pandas as pd
 from beautifier import PrettyJSONResponse
-
+from datetime import datetime
 
 # Create an instance of the FastAPI class
 app = FastAPI()
@@ -44,7 +44,11 @@ async def read_root(request: Request, position: int = 0):
 
     position = min(position, max_position)
     res = data[position].copy()
+    last_history_item=res['history'][-1]
+    last_history_item['timestamp']=datetime.now() #int(datetime.now().timestamp() * 1000)
+    # pprint(f'{last_history_item=}')
     res["day_over"] = day_over
+    res['last_history_item']=last_history_item
     return res
 
 
@@ -93,8 +97,8 @@ def order_book_wrapper(settings):
 
         for j, i in enumerate(out["book_state"]):
             arr = i[0].get(_type)
-            arr_sub = arr[:, :3]
-            df = pd.DataFrame(arr_sub, columns=["price", "action", "trader"])
+            arr_sub = arr[:, :2]
+            df = pd.DataFrame(arr_sub, columns=["x", "y"])
             res.append(df.to_dict(orient="records"))
 
         return res
@@ -112,13 +116,18 @@ def order_book_wrapper(settings):
 
             temp_res["median"] = (temp_res["bid"] + temp_res["ask"]) / 2
             res.append(temp_res)
-        ask_data=[i.get('ask') for i in res]
-        bid_data=[i.get('bid') for i in res]
-        median_data=[i.get('median') for i in res]
+        max_len=len(data)            
+        rest_len=len(data)-len(res)
+        rest=[None]*rest_len
+        ask_data=[i.get('ask') for i in res]+rest
+        bid_data=[i.get('bid') for i in res]+rest
+        median_data=[i.get('median') for i in res]+rest
         ask_series=dict(name='Ask', data=ask_data)
         bid_series=dict(name='Bid', data=bid_data)
         median_series=dict(name='Median', data=median_data)
         res=[ask_series, bid_series, median_series]
+        max_len=len(data)
+        
         return res
 
     bid_list = retrieve_book_state("bid")
@@ -147,6 +156,7 @@ def order_book_wrapper(settings):
               history=history, bid=bid, ask=ask)
         for timestamp, history, bid, ask, data_for_chart in full_data_zip
     ]
+    
 
     return full_data
 
