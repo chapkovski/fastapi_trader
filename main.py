@@ -49,6 +49,7 @@ async def read_root(request: Request, position: int = 0):
     # pprint(f'{last_history_item=}')
     res["day_over"] = day_over
     res['last_history_item']=last_history_item
+
     return res
 
 
@@ -129,6 +130,18 @@ def order_book_wrapper(settings):
         max_len=len(data)
         
         return res
+    def get_last_chartdata(data, position):
+        types = ["bid", "ask"]
+        i=data[position]
+        temp_res = {}
+        for _type in types:
+            arr = i[0].get(_type)
+            arr_sub = arr[:, :3]
+            df = pd.DataFrame(arr_sub, columns=["price", "action", "trader"])
+            temp_res[_type] = df.price.mean()
+
+        temp_res["median"] = (temp_res["bid"] + temp_res["ask"]) / 2
+        return temp_res
 
     bid_list = retrieve_book_state("bid")
     ask_list = retrieve_book_state("ask")
@@ -142,19 +155,20 @@ def order_book_wrapper(settings):
         out["trade_history"],
         columns=["timestamp", "direction", "order_type", "price", "agression"],
     )
-
+     
     df = traders_identity_df.merge(trade_history_df, left_index=True, right_index=True)
     trade_history = df.to_dict(orient="records")
     timestamps = df["timestamp"].tolist()
     increment_trade_history = [
         trade_history[: i + 1] for i in range(len(trade_history))
     ]
-
-    full_data_zip = zip(timestamps, increment_trade_history, bid_list, ask_list, full_data_for_chart)
+    spread_data_for_chart = [get_last_chartdata(out["book_state"], position=i) for i in range(len(trade_history))]
+    full_data_zip = zip(timestamps, increment_trade_history, bid_list, ask_list, full_data_for_chart,spread_data_for_chart)
     full_data = [
         dict(timestamp=timestamp, tot_length=len(timestamps), data_for_chart=data_for_chart,
+             last_point_for_chart=spread_data_for_chart,
               history=history, bid=bid, ask=ask)
-        for timestamp, history, bid, ask, data_for_chart in full_data_zip
+        for timestamp, history, bid, ask, data_for_chart,spread_data_for_chart in full_data_zip
     ]
     
 
