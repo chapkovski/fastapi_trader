@@ -1,0 +1,57 @@
+# .gitignore
+
+# .env files
+.env
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyCharm / IntelliJ files
+.idea/
+
+# Log files
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Python virtual environment
+venv/
+*.venv
+.venv/
+env/
+.venv/
+.SAVE
+.vscode/
+*.pyc
+*~
+
+# MongoDB database files
+mongod.log
+*.lock
+/storage.bson
+/storage.metadata.json
+/storage.0
+mongod.lock
+storage.*
+
+# Packages
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Node modules (if you're using some frontend framework)
+node_modules/
+
+# Dependency directories
+/vendor/

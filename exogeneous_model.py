@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from scipy.stats import stats
 import sys
+from pprint import pprint
 import scipy as scipy
 from scipy import stats
 from update_book_nb import update_book_nb
@@ -193,7 +194,8 @@ def algo_trading_check(previous_bid, previous_ask,
 
     return events_new
 
-
+# this one create limit order book for a set of events
+# actually this one is not needed when we play interactively
 def create_limit_order_book(events, Ndepth, sigma=1, previous_mid_price=100.50, algo_trading=False, arg_input=None):
     step_size = float(sigma)
     time_max = int(arg_input['T_day'])
@@ -213,6 +215,7 @@ def create_limit_order_book(events, Ndepth, sigma=1, previous_mid_price=100.50, 
     # initializiation of the order book
     bid_side = []
     ask_side = []
+    
     # define the data types of the elements in the tuple
     # trade_history_dtype = np.dtype(
     #     [('event_time', np.float64), ('event_type', np.float64), ('order_type', np.float64), ('price', np.float64),
@@ -267,8 +270,8 @@ def create_limit_order_book(events, Ndepth, sigma=1, previous_mid_price=100.50, 
         9. previous_mid_price
         10. id_trader
         """
-       
-        ask_side, bid_side, trade_history, flag_price_improvement, passive_trader = update_book_nb(event_time,
+ 
+        ask_side, bid_side, trade_history, flag_price_improvement, passive_trader, new_item_dict = update_book_nb(event_time,
                                                                                                    event_type, ask_side,
                                                                                                    bid_side,
                                                                                                    trade_history,
@@ -278,6 +281,9 @@ def create_limit_order_book(events, Ndepth, sigma=1, previous_mid_price=100.50, 
                                                                                                    id_trader)
 
         # Add trade to trade history
+        # register_trade(new_item_dict)
+
+
         if len(ask_side) != 0 and len(bid_side) != 0:
             previous_mid_price = (ask_side[0][0] + bid_side[0][0]) / 2
 
