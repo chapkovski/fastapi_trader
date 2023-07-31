@@ -10,3 +10,4 @@ class Trade(Document):
     trader_id=IntField()
 
     meta = {"ordering": ["-event_time"]}  # descending order
+

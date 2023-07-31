@@ -4,6 +4,7 @@ from uuid import UUID
 from typing import Optional
 
 
+
 class Item(BaseModel):
     name: str
     description: str = None
@@ -97,3 +98,9 @@ class TraderNoSession(BaseModel):
         description="Unique UUID to find the trader data in the DB",
         example="3fa85f64-5717-4562-b3fc-2c963f66afa6",
     )
+
+class CancelOrder(BaseModel):
+    id_trader_in_session: int= Field(..., example=1)
+    trader_uuid: UUID = Field(..., example=UUID('12345678123456781234567812345678'))
+    id_order: int = Field(..., example=1)
+    order_uuid: UUID = Field(..., example=UUID('12345678123456781234567812345678'))

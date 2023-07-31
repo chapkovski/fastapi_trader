@@ -24,7 +24,8 @@ from models.payload import (
     SessionSettings,
     TraderInSession,
     TraderNoSession,
-    NewOrder
+    NewOrder,
+    CancelOrder
 )
 
 
@@ -234,4 +235,13 @@ async def get_session_trader(session_uuid: UUID, id_in_session: int):
           "<br> Either <code>id_trader_in_session</code> or <code>trader_uuid</code> is required (both are also ok)")
 async def create_order(order: NewOrder):
     # Functionality to create a new order
+    pass
+
+
+@app.post("/orders/cancel", response_model=CancelOrder, tags=["Orders"],
+            summary="Cancel an order",
+            description="This endpoint cancels an order with the given parameters. "
+            "<br> Either <code>id_trader_in_session</code> or <code>trader_uuid</code> is required (both are also ok)")
+async def cancel_order(order: CancelOrder):
+    # Functionality to cancel an order
     pass
